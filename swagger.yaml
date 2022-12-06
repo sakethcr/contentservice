@@ -1,0 +1,979 @@
+openapi: 3.0.2
+info:
+  title: C4 Content Service API
+  description: C4 Content Service API
+  version: 1.1.0
+servers:
+  - url: 'https://3zilp8fczk.execute-api.ap-south-1.amazonaws.com/v1'
+    description: API Gateway
+security:
+  - bearerAuth: []
+tags:
+  - name: Brands
+    description: APIs to create and get information about brands
+  - name: Episodes
+    description: APIs to create and get informaton about episodes
+  - name: Seasons
+    description: APIs to create and get informaton about seasons
+  - name: Series
+    description: APIs to create and get informaton about series
+  - name: Service
+    description: Service APIs
+paths:
+  /healthcheck:
+    get:
+      tags:
+        - Service
+      summary: Health check
+      description: Check internal services
+      responses:
+        '200':
+          $ref: '#/components/responses/APIStatusResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '500':
+          $ref: '#/components/responses/ISEResponse'
+  /brands:
+    get:
+      tags:
+        - Brands
+      summary: Query brand details
+      description: Get brand details by query parameters
+      parameters:
+        - name: name
+          in: query
+          description: part or full name of the brand (string length <= 255)
+          example: Film4
+          schema:
+            type: string
+        - name: group
+          in: query
+          description: part of full name of the group (string length <= 255)
+          example: Movies
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: limits the number of returned items (default = 100)
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: offset of returned items (start from index)(default = 100)
+          schema:
+            type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/BrandListResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestParamsResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '500':
+          $ref: '#/components/responses/ISEResponse'
+    post:
+      tags:
+        - Brands
+      summary: Create a new group
+      description: Creates a new group with the details
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BrandDetailsRequestBody'
+      responses:
+        '201':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrandDetails'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '500':
+          $ref: '#/components/responses/ISEResponse'
+  '/brands/{id}':
+    get:
+      tags:
+        - Brands
+      summary: Get brand details
+      description: Get brand details by ID
+      parameters:
+        - name: id
+          in: path
+          description: brand ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/BrandDetails'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/ISEResponse'
+  '/brands/{id}/episodes':
+    get:
+      tags:
+        - Brands
+      summary: Get all the episodes associated with the brand
+      description: Get all the episodes associated with the brand
+      parameters:
+        - name: id
+          in: path
+          description: brand ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/EpisodeListResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/ISEResponse'
+  '/brands/{id}/seasons':
+    get:
+      tags:
+        - Brands
+      summary: Get all the seasons associated with the brand
+      description: Get all the seasons associated with the brand
+      parameters:
+        - name: id
+          in: path
+          description: brand ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/SeasonListResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/ISEResponse'
+  '/brands/{id}/series':
+    get:
+      tags:
+        - Brands
+      summary: Get all the series associated with the brand
+      description: Get all the series associated with the brand
+      parameters:
+        - name: id
+          in: path
+          description: brand ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/SeriesListResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/ISEResponse'
+  '/episodes/{id}':
+    get:
+      tags:
+        - Episodes
+      summary: Get the episode details with the given episode ID
+      description: Get the episode details with the given episode ID
+      parameters:
+        - name: id
+          in: path
+          description: episode ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/EpisodeDetails'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/ISEResponse'
+  '/episodes/{id}/season':
+    get:
+      tags:
+        - Episodes
+      summary: Get the season for the episode
+      description: Get the season for the given episode
+      parameters:
+        - name: id
+          in: path
+          description: episode ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+            $ref: '#/components/responses/SeasonListResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/ISEResponse'
+  '/episodes/{id}/series':
+    get:
+      tags:
+        - Episodes
+      summary: Get the series for the episode
+      description: Get the series for the episode
+      parameters:
+        - name: id
+          in: path
+          description: episode ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/SeriesListResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/ISEResponse'
+  '/seasons/{id}':
+    get:
+      tags:
+        - Seasons
+      summary: Get the season details with the given season ID
+      description: Get the seasons details with the given season ID
+      parameters:
+        - name: id
+          in: path
+          description: season ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/SeasonDetails'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/ISEResponse'
+  '/seasons/{id}/series':
+    get:
+      tags:
+        - Seasons
+      summary: Get the series for the season
+      description: Get the series for the season
+      parameters:
+        - name: id
+          in: path
+          description: season ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/SeriesListResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/ISEResponse'
+  '/seasons/{id}/episodes':
+    get:
+      tags:
+        - Episodes
+      summary: Get the episodes for the season
+      description: Get the episodes for the season
+      parameters:
+        - name: id
+          in: path
+          description: season ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/EpisodeListResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/ISEResponse'
+  '/series/{id}':
+    get:
+      tags:
+        - Series
+      summary: Get the series details with the given series ID
+      description: Get the series details with the given series ID
+      parameters:
+        - name: id
+          in: path
+          description: series ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/SeriesDetails'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/ISEResponse'
+  '/series/{id}/episodes':
+    get:
+      tags:
+        - Series
+      summary: Get the episodes for the series
+      description: Get the episodes for the series
+      parameters:
+        - name: id
+          in: path
+          description: series ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/EpisodeListResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/ISEResponse'
+  '/series/{id}/seasons':
+    get:
+      tags:
+        - Series
+      summary: Get the seasons for the series
+      description: Get the seasons for the series
+      parameters:
+        - name: id
+          in: path
+          description: series ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/SeasonListResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/ISEResponse'
+components:
+  responses:
+    BrandListResponse:
+      description: Ok
+      content:
+        application/hal+json:
+          schema:
+            $ref: '#/components/schemas/BrandListResponseBody'
+    EpisodeListResponse:
+      description: Ok
+      content:
+        application/hal+json:
+          schema:
+            $ref: '#/components/schemas/EpisodeListResponseBody'
+    SeasonListResponse:
+      description: Ok
+      content:
+        application/hal+json:
+          schema:
+            $ref: '#/components/schemas/SeasonListResponseBody'
+    SeriesListResponse:
+      description: Ok
+      content:
+        application/hal+json:
+          schema:
+            $ref: '#/components/schemas/SeriesListResponseBody'
+    OkMessageResponse:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardMessageResponseBody'
+    NotFoundResponse:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponseBody'
+          example:
+            errorType: Repository
+            message:
+              error: Resource not found
+    ForbiddenResponse:
+      description: The action is forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponseBody'
+          example:
+            errorType: Forbidden
+            message:
+              error: Permission to perform this action has been denied
+    UnauthorizedResponse:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponseBody'
+          example:
+            errorType: Authorisation
+            message:
+              error: Authorisation failure resulted in an explicit deny
+    ISEResponse:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponseBody'
+          example:
+            errorType: ISE
+            message:
+              error: An unexpected error has occurred
+    BadRequestResponse:
+      description: Invalid request parameters/payload
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponseBody'
+          example:
+            errorType: Validation
+            message:
+              error: Failed to unmarshal JSON
+    BadRequestParamsResponse:
+      description: Invalid request parameters/payload
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponseBody'
+          example:
+            errorType: Validation
+            message:
+              error: '''badParam'' is not a valid parameter.'
+    UnsupportedMediaTypeResponse:
+      description: Unsupported media type
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponseBody'
+          example:
+            errorType: Unsupported
+            message:
+              error: Provided MIME type not supported by endpoint
+    APIStatusResponse:
+      description: API status
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIStatusResponseBody'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    ErrorResponseBody:
+      type: object
+      properties:
+        errorType:
+          type: string
+          description: type of error
+          example: Validation
+        message:
+          type: object
+          description: object containing details of the error
+    APIStatusResponseBody:
+      type: object
+      properties:
+        Status:
+          type: string
+          description: status of the client-facing API
+          example: OK
+    APIStatus:
+      type: object
+      properties:
+        Name:
+          type: string
+          description: name of the internal API
+          example: Internal API Name
+        Status:
+          type: string
+          description: status of the internal API
+          example: OK
+    StandardMessageResponseBody:
+      type: object
+      properties:
+        message:
+          type: string
+          description: String detailing the error
+    BrandListResponseBody:
+      type: object
+      properties:
+        Total:
+          type: integer
+        Count:
+          type: integer
+        Items:
+          type: array
+          items:
+            $ref: '#/components/schemas/BrandDetails'
+    EpisodeListResponseBody:
+      type: object
+      properties:
+        Total:
+          type: integer
+        Count:
+          type: integer
+        Items:
+          type: array
+          items:
+            $ref: '#/components/schemas/EpisodeDetails'
+    SeasonListResponseBody:
+      type: object
+      properties:
+        Total:
+          type: integer
+        Count:
+          type: integer
+        Items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SeasonDetails'
+    SeriesListResponseBody:
+      type: object
+      properties:
+        Total:
+          type: integer
+        Count:
+          type: integer
+        Items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SeriesDetails'
+    BrandDetails:
+      type: object
+      properties:
+        ID:
+          type: string
+          example: 85b01294-5230-4700-9a80-b3058ebd4edb
+        Name:
+          description: Name of the brand/channel
+          type: string
+          example: Film4
+        Description:
+          type: string
+          example: Film 4
+        Group:
+          description: The grouping of the brand
+          type: string
+          example: Movies
+        Created:
+          description: Created date/time
+          type: string
+          example: '2020-04-01T00:00:00Z'
+        Modified:
+          description: Last modified date time
+          type: string
+          example: '2020-04-01T00:05:00Z'
+        _links:
+          $ref: '#/components/schemas/BrandLinks'
+    EpisodeDetails:
+      type: object
+      properties:
+        ID:
+          type: string
+          example: 85b01294-5230-4700-9a80-b3058ebd4edb
+        MaterialID:
+          description: material id of the episode
+          type: string
+          example: A9999/001/02
+        Name:
+          description: Name of the episode
+          type: string
+          example: Come Dine with me Daytime 18 - Bristol 1
+        Title:
+          description: Title of the episode
+          type: string
+          example: Come Dine with me Daytime 18 - Bristol 1
+        ExternalID:
+          description: external id of the episode. This can be used for correlation
+          type: string
+        RunOrder:
+          description: Run order of the episode
+          type: string
+        ProductionOrder:
+          type: string
+        ProductionYear:
+          description: year of production
+          type: string
+        DomesticTitle:
+          description: Domestic title in case the original is in a different language
+          type: string
+        ShortSynopsis:
+          description: Short Synopsis
+          type: string
+        LongSynopsis:
+          description: Long Synopsis
+          type: string
+        Ratings:
+          type: array
+          description: ratings
+          items:
+            type: string
+          example: ["Violence", "Language"]
+        Classification:
+          description: age rating/classification
+          type: string
+          example: 18
+        ComplianceTags:
+          type: array
+          description: ratings
+          items:
+            type: string
+        SearchTagCloud:
+          type: array
+          description: An array of tags which are used to search for the episodes
+          items:
+            type: string
+        Created:
+          type: string
+          example: '2020-04-01T00:00:00Z'
+        Modified:
+          type: string
+          example: '2020-04-01T00:05:00Z'
+        _links:
+          $ref: '#/components/schemas/EpisodeLinks'
+    SeasonDetails:
+      type: object
+      properties:
+        ID:
+          type: string
+          example: 85b01294-5230-4700-9a80-b3058ebd4edb
+        MaterialID:
+          type: string
+          description: A season may or may not have the materialid. This will depend on the MAM system that is being used.
+          example: A9999/001
+        Name:
+          description: name of the season
+          type: string
+          example: Come Dine with me Daytime 18 - Bristol
+        Title:
+          description: season title
+          type: string
+          example: Come Dine with me Daytime 18 - Bristol
+        ExternalID:
+          description: external id can be used for correlation
+          type: string
+        RunOrder:
+          description: run order of the season
+          type: string
+        ProductionOrder:
+          type: string
+        ProductionYear:
+          description: year of production
+          type: string
+        DomesticTitle:
+          description: domestic title
+          type: string
+        ShortSynopsis:
+          description: short synopsis
+          type: string
+        LongSynopsis:
+          description: long synopsis
+          type: string
+        Ratings:
+          type: array
+          description: ratings
+          items:
+            type: string
+          example: ["Violence", "Language"]
+        Classification:
+          description: age rating/classification
+          type: string
+          example: 18
+        ComplianceTags:
+          type: array
+          description: compliance tags
+          items:
+            type: string
+        SearchTagCloud:
+          type: array
+          description: An array of tags which are used to search for the season
+          items:
+            type: string
+        Created:
+          type: string
+          example: '2020-04-01T00:00:00Z'
+        Modified:
+          type: string
+          example: '2020-04-01T00:05:00Z'
+        _links:
+          $ref: '#/components/schemas/SeasonLinks'
+    SeriesDetails:
+      type: object
+      properties:
+        ID:
+          type: string
+          example: 85b01294-5230-4700-9a80-b3058ebd4edb
+        MaterialID:
+          type: string
+          description: A series may or may not have the materialid. This will depend on the MAM system that is being used.
+          example: A9999
+        Name:
+          type: string
+          example: Come Dine with me Daytime 18
+        Title:
+          type: string
+          example: Come Dine with me Daytime 18
+        ExternalID:
+          type: string
+        ProductionYear:
+          type: string
+        DomesticTitle:
+          type: string
+        ShortSynopsis:
+          type: string
+        LongSynopsis:
+          type: string
+        Ratings:
+          type: array
+          description: ratings
+          items:
+            type: string
+        Classification:
+          description: age rating/classification
+          type: string
+        ComplianceTags:
+          type: array
+          description: ratings
+          items:
+            type: string
+        SearchTagCloud:
+          type: array
+          description: An array of tags which are used to search for the series
+          items:
+            type: string
+        Created:
+          type: string
+          example: '2020-04-01T00:00:00Z'
+        Modified:
+          type: string
+          example: '2020-04-01T00:05:00Z'
+        _links:
+          $ref: '#/components/schemas/SeriesLinks'
+    BrandDetailsRequestBody:
+      type: object
+      properties:
+        Name:
+          type: string
+          example: Film4
+        Description:
+          type: string
+          example: Film 4
+        Group:
+          type: string
+          example: Movies
+    BrandLink:
+      type: object
+      properties:
+        href:
+          type: string
+          example: '/brands/85b01294-5230-4700-9a80-b3058ebd4edb'
+    BrandEpisodesLink:
+      type: object
+      properties:
+        href:
+          type: string
+          example: '/brands/85b01294-5230-4700-9a80-b3058ebd4edb/episodes'
+    BrandSeriesLink:
+      type: object
+      properties:
+        href:
+          type: string
+          example: '/brands/85b01294-5230-4700-9a80-b3058ebd4edb/series'
+    BrandSeasonsLink:
+      type: object
+      properties:
+        href:
+          type: string
+          example: '/groups/85b01294-5230-4700-9a80-b3058ebd4edb/seasons'
+    EpisodeLink:
+      type: object
+      properties:
+        href:
+          type: string
+          example: '/episodes/85b01294-5230-4700-9a80-b3058ebd4edb'
+    EpisodeSeriesLink:
+      type: object
+      properties:
+        href:
+          type: string
+          example: '/episodes/85b01294-5230-4700-9a80-b3058ebd4edb/series'
+    EpisodeSeasonLink:
+      type: object
+      properties:
+        href:
+          type: string
+          example: '/episodes/85b01294-5230-4700-9a80-b3058ebd4edb/seasons'
+    EpisodeTimecodesLink:
+      type: object
+      properties:
+        href:
+          type: string
+          example: '/episodes/85b01294-5230-4700-9a80-b3058ebd4edb/timcodes'
+    EpisodeVideoLink:
+      type: object
+      properties:
+        href:
+          type: string
+          example: '/episodes/85b01294-5230-4700-9a80-b3058ebd4edb/video'
+    EpisodeAudioLink:
+      type: object
+      properties:
+        href:
+          type: string
+          example: '/episodes/85b01294-5230-4700-9a80-b3058ebd4edb/audio'
+    EpisodeAudioDescriptionLink:
+      type: object
+      properties:
+        href:
+          type: string
+          example: '/episodes/85b01294-5230-4700-9a80-b3058ebd4edb/audiodescription'
+    EpisodeSubtitlesLink:
+      type: object
+      properties:
+        href:
+          type: string
+          example: '/episodes/85b01294-5230-4700-9a80-b3058ebd4edb/subtitles'
+    EpisodeQCReportsLink:
+      type: object
+      properties:
+        href:
+          type: string
+          example: '/episodes/85b01294-5230-4700-9a80-b3058ebd4edb/qcreports'
+    SeasonLink:
+      type: object
+      properties:
+        href:
+          type: string
+          example: '/seasons/85b01294-5230-4700-9a80-b3058ebd4edb'
+    SeasonSeriesLink:
+      type: object
+      properties:
+        href:
+          type: string
+          example: '/seasons/85b01294-5230-4700-9a80-b3058ebd4edb/series'
+    SeasonEpisodeLink:
+      type: object
+      properties:
+        href:
+          type: string
+          example: '/seasons/85b01294-5230-4700-9a80-b3058ebd4edb/episodes'
+    SeriesLink:
+      type: object
+      properties:
+        href:
+          type: string
+          example: '/series/85b01294-5230-4700-9a80-b3058ebd4edb'
+    SeriesSeasonLink:
+      type: object
+      properties:
+        href:
+          type: string
+          example: '/series/85b01294-5230-4700-9a80-b3058ebd4edb/seasons'
+    SeriesEpisodeLink:
+      type: object
+      properties:
+        href:
+          type: string
+          example: '/series/85b01294-5230-4700-9a80-b3058ebd4edb/episodes'
+    BrandLinks:
+      type: object
+      properties:
+        self:
+          $ref: '#/components/schemas/BrandLink'
+        'episodes':
+          $ref: '#/components/schemas/BrandEpisodesLink'
+        'seasons':
+          $ref: '#/components/schemas/BrandSeasonsLink'
+        'series':
+          $ref: '#/components/schemas/BrandSeriesLink'
+    EpisodeLinks:
+      type: object
+      properties:
+        self:
+          $ref: '#/components/schemas/EpisodeLink'
+        'series':
+          $ref: '#/components/schemas/EpisodeSeriesLink'
+        'season':
+          $ref: '#/components/schemas/EpisodeSeasonLink'
+        'timecodes':
+          $ref: '#/components/schemas/EpisodeTimecodesLink'
+        'video':
+          $ref: '#/components/schemas/EpisodeVideoLink'
+        'audio':
+          $ref: '#/components/schemas/EpisodeAudioLink'
+        'audiodescription':
+          $ref: '#/components/schemas/EpisodeAudioDescriptionLink'
+        'qcreports':
+          $ref: '#/components/schemas/EpisodeQCReportsLink'
+        'subtitles':
+          $ref: '#/components/schemas/EpisodeSubtitlesLink'
+    SeasonLinks:
+      type: object
+      properties:
+        self:
+          $ref: '#/components/schemas/SeasonLink'
+        'series':
+          $ref: '#/components/schemas/SeasonSeriesLink'
+        'episodes':
+          $ref: '#/components/schemas/SeasonEpisodeLink'
+    SeriesLinks:
+      type: object
+      properties:
+        self:
+          $ref: '#/components/schemas/SeriesLink'
+        'season':
+          $ref: '#/components/schemas/SeriesSeasonLink'
+        'episodes':
+          $ref: '#/components/schemas/SeriesEpisodeLink'
