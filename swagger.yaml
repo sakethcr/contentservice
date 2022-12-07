@@ -4,7 +4,7 @@ info:
   description: C4 Content Service API
   version: 1.1.0
 servers:
-  - url: 'https://3zilp8fczk.execute-api.ap-south-1.amazonaws.com/v1'
+  - url: '/v1'
     description: API Gateway
 security:
   - bearerAuth: []
@@ -20,6 +20,17 @@ tags:
   - name: Service
     description: Service APIs
 paths:
+  /:
+    get:
+      summary: Root level resources
+      description: Root level resources
+      responses:
+        '200':
+          $ref: '#/components/responses/APIAllLinksResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '500':
+          $ref: '#/components/responses/ISEResponse'
   /healthcheck:
     get:
       tags:
@@ -59,7 +70,7 @@ paths:
             type: integer
         - name: offset
           in: query
-          description: offset of returned items (start from index)(default = 100)
+          description: offset of returned items (start from index)(default = 0)
           schema:
             type: integer
       responses:
@@ -188,6 +199,52 @@ paths:
           $ref: '#/components/responses/NotFoundResponse'
         '500':
           $ref: '#/components/responses/ISEResponse'
+  '/episodes':
+    get:
+      tags:
+        - Episodes
+      summary: Search for episodes based on the different possible search critera
+      description: Search for episodes based on the different possible search critera
+      parameters:
+        - name: tags
+          in: query
+          description: It searches and returns episodes with for specific tags 
+          schema:
+            type: string
+        - name: query
+          in: query
+          description: It searches and returns episodes with with specific query. The query format is to be designed and it will have the attribute(s) for which it has to search and the value(s).
+          schema:
+            type: string
+        - name: search
+          in: query
+          description: It searches and returns episodes for a defined set of attributes for the given search string. 
+          schema:
+            type: string
+        - name: sort
+          in: query
+          description: The sort attribute for the search results. 
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: limits the number of returned items (default = 100)
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: offset of returned items (start from index)(default = 0)
+          schema:
+            type: integer
+      responses:
+        '200':
+          $ref: '#/components/schemas/EpisodeListResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/ISEResponse'
   '/episodes/{id}':
     get:
       tags:
@@ -258,6 +315,52 @@ paths:
           $ref: '#/components/responses/NotFoundResponse'
         '500':
           $ref: '#/components/responses/ISEResponse'
+  '/seasons':
+    get:
+      tags:
+        - Seasons
+      summary: Search for seasons based on the different possible search critera
+      description: Search for seasons based on the different possible search critera
+      parameters:
+        - name: tags
+          in: query
+          description: It searches and returns seasons with for specific tags 
+          schema:
+            type: string
+        - name: query
+          in: query
+          description: It searches and returns seasons with with specific query. The query format is to be designed and it will have the attribute(s) for which it has to search and the value(s).
+          schema:
+            type: string
+        - name: search
+          in: query
+          description: It searches and returns seasons for a defined set of attributes for the given search string. 
+          schema:
+            type: string
+        - name: sort
+          in: query
+          description: The sort attribute for the search results. 
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: limits the number of returned items (default = 100)
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: offset of returned items (start from index)(default = 0)
+          schema:
+            type: integer
+      responses:
+        '200':
+          $ref: '#/components/schemas/EpisodeListResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/ISEResponse'
   '/seasons/{id}':
     get:
       tags:
@@ -322,6 +425,52 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/EpisodeListResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/ISEResponse'
+  '/series':
+    get:
+      tags:
+        - Series
+      summary: Search for series based on the different possible search critera
+      description: Search for series based on the different possible search critera
+      parameters:
+        - name: tags
+          in: query
+          description: It searches and returns series with for specific tags 
+          schema:
+            type: string
+        - name: query
+          in: query
+          description: It searches and returns series with with specific query. The query format is to be designed and it will have the attribute(s) for which it has to search and the value(s).
+          schema:
+            type: string
+        - name: search
+          in: query
+          description: It searches and returns series for a defined set of attributes for the given search string. 
+          schema:
+            type: string
+        - name: sort
+          in: query
+          description: The sort attribute for the search results. 
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: limits the number of returned items (default = 100)
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: offset of returned items (start from index)(default = 0)
+          schema:
+            type: integer
+      responses:
+        '200':
+          $ref: '#/components/schemas/SeriesListResponse'
         '401':
           $ref: '#/components/responses/UnauthorizedResponse'
         '404':
@@ -506,6 +655,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/APIStatusResponseBody'
+    APIAllLinksResponse:
+      description: API status
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIAllLinksResponseBody'
   securitySchemes:
     bearerAuth:
       type: http
@@ -557,6 +712,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/BrandDetails'
+    APIAllLinksResponseBody:
+      type: object
+      properties:
+        _links:
+          $ref: '#/components/schemas/AllLinks'
     EpisodeListResponseBody:
       type: object
       properties:
@@ -670,7 +830,7 @@ components:
           description: ratings
           items:
             type: string
-        SearchTagCloud:
+        Tags:
           type: array
           description: An array of tags which are used to search for the episodes
           items:
@@ -736,7 +896,7 @@ components:
           description: compliance tags
           items:
             type: string
-        SearchTagCloud:
+        Tags:
           type: array
           description: An array of tags which are used to search for the season
           items:
@@ -788,7 +948,7 @@ components:
           description: ratings
           items:
             type: string
-        SearchTagCloud:
+        Tags:
           type: array
           description: An array of tags which are used to search for the series
           items:
@@ -819,6 +979,42 @@ components:
         href:
           type: string
           example: '/brands/85b01294-5230-4700-9a80-b3058ebd4edb'
+    BrandsLink:
+      type: object
+      properties:
+        href:
+          type: string
+          example: '/brands{?name,group,offset,limit}'
+        templated:
+          type: bool
+          example: true
+    EpisodesLink:
+      type: object
+      properties:
+        href:
+          type: string
+          example: '/episodes{?tags,query,search,offset,limit}'
+        templated:
+          type: bool
+          example: true
+    SeriesLink:
+      type: object
+      properties:
+        href:
+          type: string
+          example: '/series{?tags,query,search,offset,limit}'
+        templated:
+          type: bool
+          example: true
+    SeasonsLink:
+      type: object
+      properties:
+        href:
+          type: string
+          example: '/seasons{?tags,query,search,offset,limit}'
+        templated:
+          type: bool
+          example: true
     BrandEpisodesLink:
       type: object
       properties:
@@ -927,6 +1123,17 @@ components:
         href:
           type: string
           example: '/series/85b01294-5230-4700-9a80-b3058ebd4edb/episodes'
+    AllLinks:
+      type: object
+      properties:
+        'episodes':
+          $ref: '#/components/schemas/EpisodesLink'
+        'seasons':
+          $ref: '#/components/schemas/SeasonsLink'
+        'series':
+          $ref: '#/components/schemas/SeriesLink'
+        'brands':
+          $ref: '#/components/schemas/BrandLink'
     BrandLinks:
       type: object
       properties:
