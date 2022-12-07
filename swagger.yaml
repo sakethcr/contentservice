@@ -19,6 +19,8 @@ tags:
     description: APIs to create and get informaton about seasons
   - name: Series
     description: APIs to create and get informaton about series
+  - name: Bulk Operations
+    description: Bulk operations
   - name: Service
     description: Service APIs
 paths:
@@ -878,6 +880,24 @@ paths:
           $ref: '#/components/responses/NotFoundResponse'
         '500':
           $ref: '#/components/responses/ISEResponse'
+  '/ingest':
+    post:
+      tags:
+        - Bulk Operations
+      summary: This will enable us to ingest a set of seasons, series, episodes in a single go
+      description: Detailed ingest structure to be defined
+      responses:
+        '200': 
+          $ref: '#/components/responses/OkMessageResponse'
+  '/outgest':
+    post:
+      tags:
+        - Bulk Operations
+      summary: This will enable us to outgest a whol tree from a starting point
+      description: Detailed outgest structure to be defined
+      responses:
+        '200': 
+          $ref: '#/components/responses/OkMessageResponse'
 components:
   responses:
     BrandListResponse:
