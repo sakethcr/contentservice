@@ -987,7 +987,6 @@ components:
           example: '/brands{?name,group,offset,limit}'
         templated:
           type: bool
-          example: true
     EpisodesLink:
       type: object
       properties:
@@ -996,7 +995,6 @@ components:
           example: '/episodes{?tags,query,search,offset,limit}'
         templated:
           type: bool
-          example: true
     SeriesLink:
       type: object
       properties:
@@ -1005,7 +1003,6 @@ components:
           example: '/series{?tags,query,search,offset,limit}'
         templated:
           type: bool
-          example: true
     SeasonsLink:
       type: object
       properties:
