@@ -4,11 +4,13 @@ info:
   description: C4 Content Service API
   version: 1.1.0
 servers:
-  - url: '/v1'
+  - url: 'https://tbd/v1'
     description: API Gateway
 security:
   - bearerAuth: []
 tags:
+  - name: Default
+    description: Root level
   - name: Brands
     description: APIs to create and get information about brands
   - name: Episodes
@@ -22,6 +24,8 @@ tags:
 paths:
   /:
     get:
+      tags:
+        - Default
       summary: Root level resources
       description: Root level resources
       responses:
@@ -85,8 +89,8 @@ paths:
     post:
       tags:
         - Brands
-      summary: Create a new group
-      description: Creates a new group with the details
+      summary: Create a new brand
+      description: Creates a new brand with the details
       requestBody:
         content:
           application/json:
@@ -129,6 +133,69 @@ paths:
                 $ref: '#/components/schemas/BrandDetails'
         '401':
           $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/ISEResponse'
+    patch:
+      tags:
+        - Brands
+      summary: Update certain attributes of a brand
+      description: Update certain attributes of a brand
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BrandDetailsRequestBody'
+      parameters:
+        - name: id
+          in: path
+          description: brand ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrandDetails'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/ISEResponse'
+    delete:
+      tags:
+        - Brands
+      summary: Deletes a brand
+      description: Deletes a brand
+      parameters:
+        - name: id
+          in: path
+          description: brand ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrandDetails'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
         '500':
@@ -238,11 +305,36 @@ paths:
             type: integer
       responses:
         '200':
-          $ref: '#/components/schemas/EpisodeListResponse'
+          $ref: '#/components/responses/EpisodeListResponse'
         '401':
           $ref: '#/components/responses/UnauthorizedResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/ISEResponse'
+    post:
+      tags:
+        - Episodes
+      summary: Create a new episode
+      description: Creates a new episode with the details
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EpisodeDetails'
+      responses:
+        '201':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EpisodeDetails'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
         '500':
           $ref: '#/components/responses/ISEResponse'
   '/episodes/{id}':
@@ -267,6 +359,69 @@ paths:
                 $ref: '#/components/schemas/EpisodeDetails'
         '401':
           $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/ISEResponse'
+    patch:
+      tags:
+        - Episodes
+      summary: Update certain attributes of an episode
+      description: Update certain attributes of an episode
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EpisodeDetails'
+      parameters:
+        - name: id
+          in: path
+          description: episode ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EpisodeDetails'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/ISEResponse'
+    delete:
+      tags:
+        - Episodes
+      summary: Deletes an episode
+      description: Deletes an episode
+      parameters:
+        - name: id
+          in: path
+          description: brand ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EpisodeDetails'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
         '500':
@@ -354,11 +509,36 @@ paths:
             type: integer
       responses:
         '200':
-          $ref: '#/components/schemas/EpisodeListResponse'
+          $ref: '#/components/responses/EpisodeListResponse'
         '401':
           $ref: '#/components/responses/UnauthorizedResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/ISEResponse'
+    post:
+      tags:
+        - Seasons
+      summary: Create a new season
+      description: Creates a new season with the details
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SeasonDetails'
+      responses:
+        '201':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeasonDetails'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
         '500':
           $ref: '#/components/responses/ISEResponse'
   '/seasons/{id}':
@@ -383,6 +563,69 @@ paths:
                 $ref: '#/components/schemas/SeasonDetails'
         '401':
           $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/ISEResponse'
+    patch:
+      tags:
+        - Seasons
+      summary: Update certain attributes of a season
+      description: Update certain attributes of a season
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SeasonDetails'
+      parameters:
+        - name: id
+          in: path
+          description: season ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeasonDetails'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/ISEResponse'
+    delete:
+      tags:
+        - Seasons
+      summary: Deletes a season
+      description: Deletes a season
+      parameters:
+        - name: id
+          in: path
+          description: season ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeasonDetails'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
         '500':
@@ -470,11 +713,36 @@ paths:
             type: integer
       responses:
         '200':
-          $ref: '#/components/schemas/SeriesListResponse'
+          $ref: '#/components/responses/SeriesListResponse'
         '401':
           $ref: '#/components/responses/UnauthorizedResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/ISEResponse'
+    post:
+      tags:
+        - Brands
+      summary: Create a new series
+      description: Creates a new series with the details
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SeriesDetails'
+      responses:
+        '201':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeriesDetails'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
         '500':
           $ref: '#/components/responses/ISEResponse'
   '/series/{id}':
@@ -499,6 +767,69 @@ paths:
                 $ref: '#/components/schemas/SeriesDetails'
         '401':
           $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/ISEResponse'
+    patch:
+      tags:
+        - Series
+      summary: Update certain attributes of a series
+      description: Update certain attributes of a series
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SeriesDetails'
+      parameters:
+        - name: id
+          in: path
+          description: series ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeriesDetails'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/ISEResponse'
+    delete:
+      tags:
+        - Series
+      summary: Deletes a series
+      description: Deletes a series
+      parameters:
+        - name: id
+          in: path
+          description: series ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeriesDetails'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
         '500':
@@ -682,18 +1013,7 @@ components:
       properties:
         Status:
           type: string
-          description: status of the client-facing API
-          example: OK
-    APIStatus:
-      type: object
-      properties:
-        Name:
-          type: string
-          description: name of the internal API
-          example: Internal API Name
-        Status:
-          type: string
-          description: status of the internal API
+          description: status of the content service API
           example: OK
     StandardMessageResponseBody:
       type: object
@@ -986,31 +1306,34 @@ components:
           type: string
           example: '/brands{?name,group,offset,limit}'
         templated:
-          type: bool
-    EpisodesLink:
+          type: boolean
+          example: true
+    AllEpisodesLink:
       type: object
       properties:
         href:
           type: string
           example: '/episodes{?tags,query,search,offset,limit}'
         templated:
-          type: bool
-    SeriesLink:
+          type: boolean
+          example: true
+    AllSeriesLink:
       type: object
       properties:
         href:
           type: string
           example: '/series{?tags,query,search,offset,limit}'
         templated:
-          type: bool
-    SeasonsLink:
+          type: boolean
+          example: true
+    AllSeasonsLink:
       type: object
       properties:
         href:
           type: string
           example: '/seasons{?tags,query,search,offset,limit}'
         templated:
-          type: bool
+          type: boolean
           example: true
     BrandEpisodesLink:
       type: object
@@ -1053,7 +1376,7 @@ components:
       properties:
         href:
           type: string
-          example: '/episodes/85b01294-5230-4700-9a80-b3058ebd4edb/timcodes'
+          example: '/episodes/85b01294-5230-4700-9a80-b3058ebd4edb/timecodes'
     EpisodeVideoLink:
       type: object
       properties:
@@ -1084,6 +1407,24 @@ components:
         href:
           type: string
           example: '/episodes/85b01294-5230-4700-9a80-b3058ebd4edb/qcreports'
+    EpisodeSchedulingLink:
+      type: object
+      properties:
+        href:
+          type: string
+          example: '/episodes/85b01294-5230-4700-9a80-b3058ebd4edb/schedules'
+    SeasonSchedulingLink:
+      type: object
+      properties:
+        href:
+          type: string
+          example: '/seasons/85b01294-5230-4700-9a80-b3058ebd4edb/schedules'
+    SeriesSchedulingLink:
+      type: object
+      properties:
+        href:
+          type: string
+          example: '/series/85b01294-5230-4700-9a80-b3058ebd4edb/schedules'
     SeasonLink:
       type: object
       properties:
@@ -1124,13 +1465,13 @@ components:
       type: object
       properties:
         'episodes':
-          $ref: '#/components/schemas/EpisodesLink'
+          $ref: '#/components/schemas/AllEpisodesLink'
         'seasons':
-          $ref: '#/components/schemas/SeasonsLink'
+          $ref: '#/components/schemas/AllSeasonsLink'
         'series':
-          $ref: '#/components/schemas/SeriesLink'
+          $ref: '#/components/schemas/AllSeriesLink'
         'brands':
-          $ref: '#/components/schemas/BrandLink'
+          $ref: '#/components/schemas/BrandsLink'
     BrandLinks:
       type: object
       properties:
@@ -1153,6 +1494,8 @@ components:
           $ref: '#/components/schemas/EpisodeSeasonLink'
         'timecodes':
           $ref: '#/components/schemas/EpisodeTimecodesLink'
+        'schedules':
+          $ref: '#/components/schemas/EpisodeSchedulingLink'
         'video':
           $ref: '#/components/schemas/EpisodeVideoLink'
         'audio':
@@ -1172,6 +1515,8 @@ components:
           $ref: '#/components/schemas/SeasonSeriesLink'
         'episodes':
           $ref: '#/components/schemas/SeasonEpisodeLink'
+        'schedules':
+          $ref: '#/components/schemas/SeasonSchedulingLink'
     SeriesLinks:
       type: object
       properties:
@@ -1181,3 +1526,5 @@ components:
           $ref: '#/components/schemas/SeriesSeasonLink'
         'episodes':
           $ref: '#/components/schemas/SeriesEpisodeLink'
+        'schedules':
+          $ref: '#/components/schemas/SeriesSchedulingLink'
